@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wiki-service
+  labels:
+    app.kubernetes.io/instance: wiki-service
+    app.kubernetes.io/name: wiki-service
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: wiki-service
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: wiki-service
+    spec:
+      containers:
+        - name: wiki-service
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.targetPort }}
+              protocol: TCP
+          resources:
+            {{ toYaml .Values.resources | nindent 12 }}
