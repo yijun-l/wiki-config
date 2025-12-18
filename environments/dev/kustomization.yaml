@@ -1,0 +1,10 @@
+# wiki-config/environments/dev/kustomization.yaml
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ../../apps/wiki-service
+patches:
+  - path: service-override.yaml
+    target:
+      kind: Deployment
+      name: wiki-service
