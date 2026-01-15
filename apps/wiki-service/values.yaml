@@ -1,6 +1,6 @@
 image:
   repository: docker.io/yijunl/wiki-service
-  tag: latest
+  tag: 88ea20b170b13ef7a312f51bd36939b53ef3480c 
   pullPolicy: IfNotPresent
 
 service:
