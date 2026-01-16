@@ -1,8 +1,10 @@
-# apps/wiki-service/values.yaml
+# environments/dev/values.yaml
+replicaCount: 1
+
 image:
   repository: docker.io/yijunl/wiki-service
-  tag: latest
-  pullPolicy: IfNotPresent
+  tag: dev-latest
+  pullPolicy: Always
 
 service:
   type: NodePort
@@ -16,12 +18,4 @@ service:
       targetPort: 5005
       nodePort: 30505
 
-replicaCount: 2
-
-resources:
-  limits:
-    cpu: 500m
-    memory: 512Mi
-  requests:
-    cpu: 250m
-    memory: 256Mi
+resources: {}

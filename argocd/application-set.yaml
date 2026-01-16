@@ -9,10 +9,14 @@ spec:
   source:
     repoURL: 'https://github.com/yijun-l/wiki-config.git'
     targetRevision: HEAD
-    path: environments/dev
+    path: apps/wiki-service
+    helm:
+      valueFiles:
+        - values.yaml
+        - ../../environments/dev/values.yaml
   destination:
     server: 'https://kubernetes.default.svc'
-    namespace: wiki-dev
+    namespace: default
   syncPolicy:
     automated:
       prune: true

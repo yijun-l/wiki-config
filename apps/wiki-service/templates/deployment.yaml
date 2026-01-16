@@ -1,3 +1,4 @@
+# apps/wiki-service/templates/deployment.yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -20,8 +21,10 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-            - name: http
-              containerPort: {{ .Values.service.targetPort }}
-              protocol: TCP
+          {{- range .Values.service.ports }}
+          - name: {{ .name }}
+            containerPort: {{ .targetPort }}
+            protocol: TCP
+          {{- end }}
           resources:
             {{ toYaml .Values.resources | nindent 12 }}
