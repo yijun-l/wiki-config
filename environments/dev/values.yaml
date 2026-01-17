@@ -3,7 +3,7 @@ replicaCount: 1
 
 image:
   repository: docker.io/yijunl/wiki-service
-  tag: dd1d45328834f8388b750ae5d8981cead2747772
+  tag: f523b22201cc8bbc4d9137c765ae2c5eed2b8a6f
   pullPolicy: Always
 
 service:
