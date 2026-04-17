@@ -1,4 +1,4 @@
-# infra/airflow/Values.yaml
+# infra/airflow/values.yaml
 executor: "KubernetesExecutor"
 
 redis:
