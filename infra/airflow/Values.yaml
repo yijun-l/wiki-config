@@ -1,0 +1,37 @@
+# infra/airflow/Values.yaml
+executor: "KubernetesExecutor"
+
+redis:
+  enabled: false
+
+statsd:
+  enabled: false
+
+triggerer:
+  enabled: false
+
+webserver:
+  replicas: 1
+
+scheduler:
+  replicas: 1
+
+postgresql:
+  enabled: true
+  persistence:
+    size: 1Gi
+
+dags:
+  gitSync:
+    enabled: true
+    repo: https://github.com/yijun-l/wiki-config
+    branch: main
+    subPath: dags
+
+users:
+  - username: admin
+    password: admin
+    role: Admin
+    email: admin@example.com
+    firstname: admin
+    lastname: admin

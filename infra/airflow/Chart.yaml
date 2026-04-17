@@ -1,0 +1,8 @@
+# infra/airflow/Chart.yaml
+apiVersion: v2
+name: airflow
+version: 1.0.0
+dependencies:
+  - name: airflow
+    repository: https://airflow.apache.org
+    version: 1.15.0
