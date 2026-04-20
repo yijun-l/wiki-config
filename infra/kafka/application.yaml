@@ -1,0 +1,26 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kafka
+  namespace: kafka
+spec:
+  project: default
+
+  source:
+    repoURL: https://github.com/yijun-l/wiki-config.git
+    targetRevision: main
+    path: infra/kafka
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: kafka
+
+  syncPolicy:
+    automated:
+      enabled: true
+      prune: true
+      selfHeal: true
+
+    syncOptions:
+      - CreateNamespace=true
+      - Prune=true
