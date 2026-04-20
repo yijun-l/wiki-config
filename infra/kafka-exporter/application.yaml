@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: kafka
+  name: kafka-exporter
   namespace: argocd
 spec:
   project: default
@@ -9,11 +9,11 @@ spec:
   source:
     repoURL: https://github.com/yijun-l/wiki-config.git
     targetRevision: main
-    path: infra/kafka
+    path: infra/kafka-exporter
 
   destination:
     server: https://kubernetes.default.svc
-    namespace: kafka
+    namespace: monitoring
 
   syncPolicy:
     automated:
@@ -22,5 +22,4 @@ spec:
       selfHeal: true
 
     syncOptions:
-      - CreateNamespace=true
       - Prune=true

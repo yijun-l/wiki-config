@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kafka-exporter
+  namespace: monitoring
+spec:
+  selector:
+    matchLabels:
+      app: kafka-exporter
+  template:
+    metadata:
+      labels:
+        app: kafka-exporter
+    spec:
+      containers:
+        - name: exporter
+          image: danielqsj/kafka-exporter:latest
+          args:
+            - "--kafka.server=kafka-service.kafka.svc:9092"
+          ports:
+            - containerPort: 9308
