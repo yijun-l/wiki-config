@@ -10,9 +10,6 @@ spec:
     repoURL: https://github.com/yijun-l/wiki-config.git
     targetRevision: main
     path: infra/hms
-    helm:
-      valueFiles:
-        - values.yaml
 
   destination:
     server: https://kubernetes.default.svc
