@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: hive
+  namespace: hms
+spec:
+  selector:
+    app: hive
+  ports:
+    - name: metastore
+      port: 9083
+      targetPort: 9083
+    - name: hiveserver2
+      port: 10000
+      targetPort: 10000
+  type: ClusterIP

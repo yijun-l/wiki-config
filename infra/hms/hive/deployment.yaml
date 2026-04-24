@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hive
+  namespace: hms
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hive
+  template:
+    metadata:
+      labels:
+        app: hive
+    spec:
+      containers:
+        - name: hive
+          image: apache/hive:4.0.0
+          command: ["/bin/bash", "-c"]
+          args:
+            - |
+              /opt/hive/bin/schematool -dbType postgres -initSchema || true;
+              /opt/hive/bin/hive --service metastore &
+              /opt/hive/bin/hive --service hiveserver2;
+          ports:
+            - containerPort: 9083
+            - containerPort: 10000
+          env:
+            - name: HIVE_METASTORE_JDBC_URL
+              value: jdbc:postgresql://postgres:5432/hive_metastore
+            - name: HIVE_METASTORE_JDBC_USER
+              value: hive
+            - name: HIVE_METASTORE_JDBC_PASSWORD
+              value: hive123
+            - name: HIVE_S3A_ENDPOINT
+              value: http://minio:9000
+            - name: HIVE_S3A_ACCESS_KEY
+              value: minioadmin
+            - name: HIVE_S3A_SECRET_KEY
+              value: minio123
+            - name: HIVE_WAREHOUSE_DIR
+              value: s3a://hive-warehouse/
