@@ -10,6 +10,8 @@ spec:
     repoURL: https://github.com/yijun-l/wiki-config.git
     targetRevision: main
     path: infra/hms
+    directory:
+      recurse: true
 
   destination:
     server: https://kubernetes.default.svc

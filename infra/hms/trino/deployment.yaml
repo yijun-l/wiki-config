@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: trino
+  namespace: hms
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: trino
+  template:
+    metadata:
+      labels:
+        app: trino
+    spec:
+      containers:
+        - name: trino
+          image: trinodb/trino:423
+          ports:
+            - containerPort: 8080
+          volumeMounts:
+            - name: catalog-config
+              mountPath: /etc/trino/catalog/hive.properties
+              subPath: hive.properties
+      volumes:
+        - name: catalog-config
+          configMap:
+            name: trino-catalog-config

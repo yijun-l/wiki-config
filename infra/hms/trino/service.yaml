@@ -1,12 +1,12 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: hive-metastore
+  name: trino
   namespace: hms
 spec:
   selector:
-    app: hive-metastore
+    app: trino
   ports:
-    - port: 9083
-      targetPort: 9083
+    - port: 8080
+      targetPort: 8080
   type: ClusterIP
