@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: hms
+  name: hive
   namespace: argocd
 spec:
   project: default
@@ -9,13 +9,13 @@ spec:
   source:
     repoURL: https://github.com/yijun-l/wiki-config.git
     targetRevision: main
-    path: infra/hms
+    path: infra/hive
     directory:
       recurse: true
 
   destination:
     server: https://kubernetes.default.svc
-    namespace: hms
+    namespace: hive
 
   syncPolicy:
     automated:

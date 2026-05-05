@@ -2,10 +2,10 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: postgres-pvc
-  namespace: hms
+  namespace: hive
 spec:
   storageClassName: local-path
-  accessModes: [ReadWriteOnce]
+  accessModes: [ ReadWriteOnce ]
   resources:
     requests:
       storage: 1Gi

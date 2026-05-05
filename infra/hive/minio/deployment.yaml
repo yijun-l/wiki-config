@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: minio
-  namespace: hms
+  namespace: hive
 spec:
   replicas: 1
   selector:
@@ -19,8 +19,8 @@ spec:
             claimName: minio-pvc
       containers:
         - name: minio
-          image: minio/minio:latest
-          command: ["minio", "server", "/data", "--console-address", ":9001"]
+          image: minio/minio:RELEASE.2024-10-29T16-01-48Z
+          command: [ "minio", "server", "/data", "--console-address", ":9001" ]
           ports:
             - containerPort: 9000
             - containerPort: 9001
@@ -29,6 +29,8 @@ spec:
               value: minioadmin
             - name: MINIO_ROOT_PASSWORD
               value: minio123
+            - name: MINIO_API_ROOT_ACCESS
+              value: "on"
           volumeMounts:
             - name: data
               mountPath: /data

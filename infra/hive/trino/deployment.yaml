@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: trino-coordinator
+  namespace: hive
+spec:
+  selector:
+    matchLabels:
+      app: trino
+      component: coordinator
+  template:
+    metadata:
+      labels:
+        app: trino
+        component: coordinator
+    spec:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+      volumes:
+        - name: config
+          configMap:
+            name: trino-coordinator
+        - name: catalog
+          configMap:
+            name: trino-catalog
+      containers:
+        - name: trino
+          image: trinodb/trino:420
+          ports:
+            - containerPort: 8080
+          volumeMounts:
+            - mountPath: /etc/trino
+              name: config
+            - mountPath: /etc/trino/catalog
+              name: catalog
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: trino-worker
+  namespace: hive
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: trino
+      component: worker
+  template:
+    metadata:
+      labels:
+        app: trino
+        component: worker
+    spec:
+      volumes:
+        - name: config
+          configMap:
+            name: trino-worker
+        - name: catalog
+          configMap:
+            name: trino-catalog
+      containers:
+        - name: trino
+          image: trinodb/trino:420
+          volumeMounts:
+            - mountPath: /etc/trino
+              name: config
+            - mountPath: /etc/trino/catalog
+              name: catalog
