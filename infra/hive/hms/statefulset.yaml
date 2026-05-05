@@ -1,48 +1,44 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: hive-metastore
-  namespace: hms
+  namespace: hive
 spec:
-  replicas: 1
   selector:
     matchLabels:
-      app: hive-metastore
+      app.kubernetes.io/name: hive-metastore
+      app.kubernetes.io/component: metastore
+      app.kubernetes.io/instance: hive-metastore
+  serviceName: hive-metastore
+  replicas: 1
   template:
     metadata:
       labels:
-        app: hive-metastore
+        app.kubernetes.io/name: hive-metastore
+        app.kubernetes.io/component: metastore
+        app.kubernetes.io/instance: hive-metastore
     spec:
-      hostAliases:
-        - ip: "72.32.157.228"
-          hostnames:
-            - "jdbc.postgresql.org"
+      initContainers:
+        - name: init-wait-db
+          image: busybox:latest
+          command: ["/bin/sh","-c"]
+          args: ["until nc -z -v -w90 postgres 5432; do echo Waiting for DB...; sleep 5; done"]
       containers:
         - name: metastore
-          image: apache/hive:4.1.0
-          command: ["/bin/bash", "-c"]
-          args:
-            - |
-              wget --no-check-certificate -O /tmp/postgresql.jar https://jdbc.postgresql.org/download/postgresql-42.6.0.jar
-              /entrypoint.sh
-
-          env:
-            - name: SERVICE_NAME
-              value: "metastore"
-            - name: DB_DRIVER
-              value: "postgres"
-            - name: HIVE_AUX_JARS_PATH
-              value: "/tmp"
-            - name: SERVICE_OPTS
-              value: >-
-                -Djavax.jdo.option.ConnectionDriverName=org.postgresql.Driver
-                -Djavax.jdo.option.ConnectionURL=jdbc:postgresql://postgres:5432/hive_metastore
-                -Djavax.jdo.option.ConnectionUserName=hive
-                -Djavax.jdo.option.ConnectionPassword=hive123
-                -Dfs.s3a.endpoint=http://minio:9000
-                -Dfs.s3a.access.key=minioadmin
-                -Dfs.s3a.secret.key=minio123
-                -Dfs.s3a.path.style.access=true
-                -Dhive.metastore.warehouse.dir=s3a://hive-warehouse/
+          image: rtdl/hive-metastore:3.1.2
+          command: [bash, entrypoint/entrypoint.sh]
           ports:
             - containerPort: 9083
+              name: thrift
+          volumeMounts:
+            - name: hive-config
+              mountPath: /opt/apache-hive-metastore-3.1.2-bin/conf
+            - name: entrypoint
+              mountPath: /opt/entrypoint
+      volumes:
+        - name: hive-config
+          configMap:
+            name: hive-metastore
+        - name: entrypoint
+          configMap:
+            name: hive-metastore-entrypoint
