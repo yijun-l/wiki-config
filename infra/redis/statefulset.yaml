@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: redis-ss
+  namespace: redis
+spec:
+  serviceName: redis-svc
+  replicas: 3
+  selector:
+    matchLabels:
+      app: redis
+  template:
+    metadata:
+      labels:
+        app: redis
+    spec:
+      containers:
+        - name: redis
+          image: redis:7-alpine
+          command: [ "sh", "-c" ]
+          args:
+            - |
+              ID=${HOSTNAME##*-}
+              if [ "$ID" = "0" ]; then
+                echo "Starting as Master"
+                exec redis-server /usr/local/etc/redis/redis.conf
+              else
+                echo "Starting as Replica, pointing to redis-ss-0"
+                exec redis-server /usr/local/etc/redis/redis.conf --replicaof redis-ss-0.redis-svc 6379
+              fi
+          ports:
+            - containerPort: 6379
+              name: redis
+          volumeMounts:
+            - name: conf
+              mountPath: /usr/local/etc/redis
+            - name: redis-data
+              mountPath: /data
+      volumes:
+        - name: conf
+          configMap:
+            name: redis-config
+
+  volumeClaimTemplates:
+    - metadata:
+        name: redis-data
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        storageClassName: "local-path"
+        resources:
+          requests:
+            storage: 1Gi
